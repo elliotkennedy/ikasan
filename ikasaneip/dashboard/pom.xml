@@ -14,7 +14,8 @@
 
 	<modules>
 		<module>war</module>
-	</modules> 
+		<module>boot</module>
+	</modules>
   
 	<build>
 		<plugins>
