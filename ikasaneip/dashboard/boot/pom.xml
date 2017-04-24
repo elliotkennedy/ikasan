@@ -53,11 +53,11 @@
     <dependencies>
 
         <!-- https://mvnrepository.com/artifact/com.vaadin/vaadin-spring-boot-starter -->
-        <dependency>
-            <groupId>com.vaadin</groupId>
-            <artifactId>vaadin-spring-boot-starter</artifactId>
-            <version>1.1.1</version>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>com.vaadin</groupId>-->
+            <!--<artifactId>vaadin-spring-boot-starter</artifactId>-->
+            <!--<version>1.1.1</version>-->
+        <!--</dependency>-->
 
 
         <dependency>

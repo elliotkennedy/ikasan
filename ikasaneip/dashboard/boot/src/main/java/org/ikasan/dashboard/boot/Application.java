@@ -4,6 +4,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
+import ru.xpoft.vaadin.SpringVaadinServlet;
 
 import java.util.Arrays;
 
@@ -24,4 +25,7 @@ public class Application
             System.out.println(beanName);
         }
     }
+
+
+
 }

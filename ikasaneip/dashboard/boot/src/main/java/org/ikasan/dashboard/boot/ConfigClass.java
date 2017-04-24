@@ -10,6 +10,7 @@ import org.springframework.context.annotation.ImportResource;
 @ImportResource( {
 
 
+        "classpath:root-context.xml",
         "classpath:error-context.xml",
         "classpath:profile-context.xml",
         "classpath:replay-context.xml",
@@ -37,7 +38,7 @@ import org.springframework.context.annotation.ImportResource;
 
 } )
 
-@ComponentScan({"org.ikasan.web.*","org.ikasan.rest.*"})
+@ComponentScan({"org.ikasan.web.*","org.ikasan.rest.*","org.ikasan.dashboard.ui.*"})
 public class ConfigClass {
     @Bean("narayanaProperties")
     public NarayanaProperties getNarayanaProperties(){
