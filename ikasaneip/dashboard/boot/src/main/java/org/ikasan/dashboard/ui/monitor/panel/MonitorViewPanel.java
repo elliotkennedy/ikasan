@@ -76,12 +76,11 @@ public class MonitorViewPanel extends Panel implements View
     private TopologyService topologyService;
     private List<View> views;
     private StartupControlService startupControlService;
-
+    
     /**
      * Constructor
-     *
-     * @param topologyService
-     * @param startupControlService
+     * 
+     * @param ikasanModuleService
      */
     public MonitorViewPanel(TopologyService topologyService, StartupControlService startupControlService)
     {

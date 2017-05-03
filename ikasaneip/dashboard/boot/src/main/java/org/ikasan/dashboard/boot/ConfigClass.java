@@ -34,7 +34,7 @@ import org.springframework.context.annotation.ImportResource;
         "classpath:providers-conf.xml",
         "classpath:module-service-conf.xml",
         "classpath:scheduler-service-conf.xml",
-        "classpath:h2db-datasource-conf.xml",
+        "classpath:datasource-conf.xml",
 
 } )
 

@@ -62,7 +62,13 @@ import org.ikasan.dashboard.ui.mappingconfiguration.panel.MappingConfigurationPa
 import org.ikasan.dashboard.ui.mappingconfiguration.util.MappingConfigurationConstants;
 import org.ikasan.dashboard.ui.mappingconfiguration.util.MappingConfigurationDocumentHelper;
 import org.ikasan.dashboard.ui.mappingconfiguration.util.MappingConfigurationImportException;
-import org.ikasan.mapping.model.*;
+import org.ikasan.mapping.model.ConfigurationContext;
+import org.ikasan.mapping.model.ConfigurationServiceClient;
+import org.ikasan.mapping.model.ConfigurationType;
+import org.ikasan.mapping.model.KeyLocationQuery;
+import org.ikasan.mapping.model.MappingConfiguration;
+import org.ikasan.mapping.model.SourceConfigurationValue;
+import org.ikasan.mapping.model.TargetConfigurationValue;
 import org.ikasan.mapping.service.MappingConfigurationService;
 import org.ikasan.mapping.service.MappingConfigurationServiceException;
 import org.ikasan.security.service.authentication.IkasanAuthentication;
@@ -196,6 +202,7 @@ public class MappingConfigurationImportWindow extends Window
                 try
                 {
                     saveImportedMappingConfiguration();
+                    mappingConfiguration = null;
                     progressLayout.setVisible(false);
                     upload.setVisible(true);
                     
@@ -207,8 +214,6 @@ public class MappingConfigurationImportWindow extends Window
                     		+"] [Source Context=" + mappingConfiguration.getSourceContext().getName() + "] [Target Context=" 
                     		+ mappingConfiguration.getTargetContext().getName() + "] [Type=" + mappingConfiguration.getConfigurationType().getName()
                     		+ "]", authentication.getName());
-
-                    mappingConfiguration = null;
                 }
                 catch (MappingConfigurationServiceException e)
                 {
@@ -330,12 +335,8 @@ public class MappingConfigurationImportWindow extends Window
                 return;
             }
 
-            this.mappingConfigurationValues = helper.getMappingConfigurationValues(receiver.file.toByteArray(), mappingConfiguration.getIsManyToMany());
-
-            if(!mappingConfiguration.getIsManyToMany())
-            {
-                this.keyLocationQueries = helper.getKeyLocationQueries(receiver.file.toByteArray());
-            }
+            this.mappingConfigurationValues = helper.getMappingConfigurationValues(receiver.file.toByteArray());
+            this.keyLocationQueries = helper.getKeyLocationQueries(receiver.file.toByteArray());
     
             this.uploadLabel.setValue("Importing " + mappingConfigurationValues.size()
                 + " configuration values. Press import to procede.");
@@ -419,75 +420,37 @@ public class MappingConfigurationImportWindow extends Window
                 return;
             }
 
-            ArrayList<ManyToManyTargetConfigurationValue> manyToManyTargetConfigurationValues = new ArrayList<ManyToManyTargetConfigurationValue>();
-
-            if(mappingConfiguration.getIsManyToMany())
+            for(MappingConfigurationValue mappingConfigurationValue: this.mappingConfigurationValues)
             {
-                for (MappingConfigurationValue mappingConfigurationValue : this.mappingConfigurationValues)
+                this.mappingConfigurationService.saveTargetConfigurationValue(mappingConfigurationValue.getTargetConfigurationValue());
+                
+                Long sourceConfigurationGroupId = null;
+                
+                if(this.mappingConfiguration.getNumberOfParams() > 1)
                 {
-                    Long  sourceConfigurationGroupId = this.mappingConfigurationService.getNextSequenceNumber();
-
-                    for (SourceConfigurationValue value : mappingConfigurationValue.getSourceConfigurationValues())
-                    {
-                        logger.debug("Source value: " + value);
-                        value.setMappingConfigurationId(id);
-                        value.setSourceConfigGroupId(sourceConfigurationGroupId);
-                    }
-
-                    for(ManyToManyTargetConfigurationValue value: mappingConfigurationValue.getTargetConfigurationValues())
-                    {
-                        value.setGroupId(sourceConfigurationGroupId);
-
-                        manyToManyTargetConfigurationValues.add(value);
-                    }
-
-                    this.mappingConfiguration.getSourceConfigurationValues().addAll(mappingConfigurationValue.getSourceConfigurationValues());
-
-
+                    sourceConfigurationGroupId = this.mappingConfigurationService.getNextSequenceNumber();
                 }
+
+                for(SourceConfigurationValue value: mappingConfigurationValue.getSourceConfigurationValues())
+                {
+                    logger.debug("Source value: " + value);
+                    value.setMappingConfigurationId(id);
+                    value.setSourceConfigGroupId(sourceConfigurationGroupId);
+                }
+
+                this.mappingConfiguration.getSourceConfigurationValues().addAll(mappingConfigurationValue.getSourceConfigurationValues());
             }
-            else
+
+            for(KeyLocationQuery query: this.keyLocationQueries)
             {
-                for (MappingConfigurationValue mappingConfigurationValue : this.mappingConfigurationValues)
-                {
-                    this.mappingConfigurationService.saveTargetConfigurationValue(mappingConfigurationValue.getTargetConfigurationValue());
+                query.setMappingConfigurationId(id);
 
-                    Long sourceConfigurationGroupId = null;
-
-                    if (this.mappingConfiguration.getNumberOfParams() > 1)
-                    {
-                        sourceConfigurationGroupId = this.mappingConfigurationService.getNextSequenceNumber();
-                    }
-
-                    for (SourceConfigurationValue value : mappingConfigurationValue.getSourceConfigurationValues())
-                    {
-                        logger.debug("Source value: " + value);
-                        value.setMappingConfigurationId(id);
-                        value.setSourceConfigGroupId(sourceConfigurationGroupId);
-                    }
-
-                    this.mappingConfiguration.getSourceConfigurationValues().addAll(mappingConfigurationValue.getSourceConfigurationValues());
-                }
-
-                for(KeyLocationQuery query: this.keyLocationQueries)
-                {
-                    query.setMappingConfigurationId(id);
-
-                    this.mappingConfigurationService.saveKeyLocationQuery(query);
-                }
+                this.mappingConfigurationService.saveKeyLocationQuery(query);
             }
 
             this.mappingConfigurationService.saveMappingConfiguration(this.mappingConfiguration);
 
             mappingConfiguration = this.mappingConfigurationService.getMappingConfigurationById(id);
-
-            if(mappingConfiguration.getIsManyToMany())
-            {
-                for(ManyToManyTargetConfigurationValue value: manyToManyTargetConfigurationValues)
-                {
-                    this.mappingConfigurationService.storeManyToManyTargetConfigurationValue(value);
-                }
-            }
 
             UI.getCurrent().getNavigator().navigateTo("existingMappingConfigurationPanel");
 
