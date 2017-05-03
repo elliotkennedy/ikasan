@@ -1,0 +1,21 @@
+apiVersion: v1
+items:
+- apiVersion: v1
+  kind: Service
+  metadata:
+    labels:
+      run: springboot-sample
+    name: springboot-sample
+  spec:
+    ports:
+    - nodePort: 32343
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+    selector:
+      run: springboot-sample
+    type: NodePort
+kind: List
+metadata: {}
+resourceVersion: ""
+selfLink: ""

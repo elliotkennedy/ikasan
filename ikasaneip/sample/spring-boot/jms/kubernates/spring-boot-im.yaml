@@ -1,0 +1,48 @@
+apiVersion: v1
+items:
+- apiVersion: extensions/v1beta1
+  kind: Deployment
+  metadata:
+    labels:
+      run: springboot-sample
+    name: springboot-sample
+    namespace: default
+  spec:
+    replicas: 1
+    selector:
+      matchLabels:
+        run: springboot-sample
+    strategy:
+      rollingUpdate:
+        maxSurge: 1
+        maxUnavailable: 1
+      type: RollingUpdate
+    template:
+      metadata:
+        labels:
+          run: springboot-sample
+      spec:
+        containers:
+        - image: ikasan/springboot-service:2.0.0-SNAPSHOT
+          imagePullPolicy: IfNotPresent
+          name: springboot-sample
+          ports:
+          - containerPort: 8080
+            protocol: TCP
+          resources: {}
+          livenessProbe:
+              httpGet:
+                 path: /sample-spring-boot-jms/manage/health
+                 port: 8080
+              initialDelaySeconds: 45
+              periodSeconds: 20
+              timeoutSeconds: 3
+          terminationMessagePath: /dev/termination-log
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+kind: List
+metadata: {}
+resourceVersion: ""
+selfLink: ""
