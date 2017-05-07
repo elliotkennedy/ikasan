@@ -202,14 +202,20 @@
             <artifactId>xnio-api</artifactId>
             <version>3.0.10.GA</version>
         </dependency>
+
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
             <version>${version.com.h2database}</version>
-            <scope>runtime</scope>
+            <scope>test</scope>
         </dependency>
 
-
+        <!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>5.1.6</version>
+        </dependency>
     </dependencies>
 
 

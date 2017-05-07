@@ -1,0 +1,12 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: ikasan-dashboard-configmap
+data:
+  application.properties: |-
+    datasource.username: root
+    datasource.password: password
+    datasource.driver-class-name: com.mysql.jdbc.Driver
+    datasource.url: jdbc:mysql://mysql:3306/Ikasan01
+    datasource.dialect: org.hibernate.dialect.MySQLDialect
+    datasource.show-sql: true

@@ -1,0 +1,55 @@
+apiVersion: v1
+items:
+- apiVersion: extensions/v1beta1
+  kind: Deployment
+  metadata:
+    labels:
+      run: ikasan-dashboard
+    name: ikasan-dashboard
+    namespace: default
+  spec:
+    replicas: 1
+    selector:
+      matchLabels:
+        run: ikasan-dashboard
+    strategy:
+      rollingUpdate:
+        maxSurge: 1
+        maxUnavailable: 1
+      type: RollingUpdate
+    template:
+      metadata:
+        labels:
+          run: ikasan-dashboard
+      spec:
+        containers:
+        - image: ikasan/ikasan-dashboard:2.0.0-SNAPSHOT
+          imagePullPolicy: IfNotPresent
+          name: ikasan-dashboard
+          ports:
+          - containerPort: 8080
+            protocol: TCP
+          resources: {}
+          volumeMounts:
+            - name: config-volume
+              mountPath: /opt/runtime/ikasan/dashboard/config
+          livenessProbe:
+              httpGet:
+                 path: /ikasan-dashboard/manage/health
+                 port: 8080
+              initialDelaySeconds: 45
+              periodSeconds: 20
+              timeoutSeconds: 3
+          terminationMessagePath: /dev/termination-log
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+        volumes:
+          - name: config-volume
+            configMap:
+              name: ikasan-dashboard-configmap
+kind: List
+metadata: {}
+resourceVersion: ""
+selfLink: ""

@@ -1,0 +1,21 @@
+apiVersion: v1
+items:
+- apiVersion: v1
+  kind: Service
+  metadata:
+    labels:
+      run: ikasan-dashboard
+    name: ikasan-dashboard
+  spec:
+    ports:
+    - nodePort: 30080
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+    selector:
+      run: ikasan-dashboard
+    type: NodePort
+kind: List
+metadata: {}
+resourceVersion: ""
+selfLink: ""
