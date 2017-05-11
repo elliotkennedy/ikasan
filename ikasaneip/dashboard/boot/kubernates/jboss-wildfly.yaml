@@ -1,0 +1,43 @@
+apiVersion: v1
+items:
+- apiVersion: extensions/v1beta1
+  kind: Deployment
+  metadata:
+    labels:
+      run: wildfly
+    name: wildfly
+    namespace: default
+  spec:
+    replicas: 1
+    selector:
+      matchLabels:
+        run: wildfly
+    strategy:
+      rollingUpdate:
+        maxSurge: 1
+        maxUnavailable: 1
+      type: RollingUpdate
+    template:
+      metadata:
+        labels:
+          run: wildfly
+      spec:
+        containers:
+        - image: ikasan/wildfly:latest
+          imagePullPolicy: IfNotPresent
+          name: wildfly
+          ports:
+          - containerPort: 8080
+            protocol: TCP
+          - containerPort: 9990
+            protocol: TCP
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+kind: List
+metadata: {}
+resourceVersion: ""
+selfLink: ""

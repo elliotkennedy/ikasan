@@ -1,0 +1,27 @@
+apiVersion: v1
+items:
+- apiVersion: v1
+  kind: Service
+  metadata:
+    labels:
+      run: wildfly
+    name: wildfly
+  spec:
+    ports:
+    - nodePort: 30880
+      name: port80
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+    - nodePort: 30990
+      name: admin
+      port: 9990
+      protocol: TCP
+      targetPort: 9990
+    selector:
+      run: wildfly
+    type: NodePort
+kind: List
+metadata: {}
+resourceVersion: ""
+selfLink: ""
