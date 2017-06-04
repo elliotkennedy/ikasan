@@ -6,6 +6,7 @@ items:
     labels:
       type: local
     name: task-pv-volume
+    namespace: esb
   spec:
     capacity:
       storage: 2Gi

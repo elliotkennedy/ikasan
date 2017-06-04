@@ -37,9 +37,6 @@ items:
           - containerPort: 8080
             protocol: TCP
           resources: {}
-          volumeMounts:
-            - name: config-volume
-              mountPath: /opt/runtime/ikasan/dashboard/config
           livenessProbe:
               httpGet:
                  path: /ikasan-dashboard/manage/health
@@ -52,10 +49,7 @@ items:
         restartPolicy: Always
         securityContext: {}
         terminationGracePeriodSeconds: 30
-        volumes:
-          - name: config-volume
-            configMap:
-              name: ikasan-dashboard-configmap
+
 kind: List
 metadata: {}
 resourceVersion: ""

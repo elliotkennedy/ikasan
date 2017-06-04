@@ -28,6 +28,7 @@ import org.springframework.context.annotation.ImportResource;
         "classpath:notification-context.xml",
         "classpath:housekeeping-context.xml",
 
+        "classpath:discovery-context.xml",
         "classpath:platform-service-conf.xml",
         "classpath:serialiser-service-conf.xml",
         "classpath:systemevent-service-conf.xml",

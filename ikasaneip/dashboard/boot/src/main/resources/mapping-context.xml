@@ -21,58 +21,62 @@
         <constructor-arg ref="newActions"/>
     </bean>
 
-    <bean id="mappingNavigatorBean" class="org.ikasan.dashboard.ui.framework.navigation.IkasanUINavigator" scope="session">
-        <constructor-arg value="mapping"/>
+	<bean id="mappingNavigatorBean" class="org.ikasan.dashboard.ui.framework.navigation.IkasanUINavigator" scope="session">
+		<constructor-arg value="mapping"/>
         <constructor-arg>
             <list>
-                <bean class="org.ikasan.dashboard.ui.framework.display.IkasanUIView" scope="session">
-                    <constructor-arg value=""/>
-                    <constructor-arg ref="emptyPanel"/>
+            	<bean class="org.ikasan.dashboard.ui.framework.display.IkasanUIView" scope="session">
+                   <constructor-arg value=""/>
+                   <constructor-arg ref="emptyPanel"/>
                 </bean>
                 <bean class="org.ikasan.dashboard.ui.framework.display.IkasanUIView" scope="session">
-                    <constructor-arg value="emptyPanel"/>
-                    <constructor-arg ref="emptyPanel"/>
+                   <constructor-arg value="emptyPanel"/>
+                   <constructor-arg ref="emptyPanel"/>
                 </bean>
                 <bean class="org.ikasan.dashboard.ui.framework.display.IkasanUIView" scope="session">
-                    <constructor-arg value="searchResultsPanel"/>
+                   <constructor-arg value="searchResultsPanel"/>
+                   <constructor-arg ref="mappingConfigurationSearchResultsPanel"/>
+                </bean>
+                <bean class="org.ikasan.dashboard.ui.framework.display.IkasanUIView" scope="session">
+                    <constructor-arg value="mappingView"/>
                     <constructor-arg ref="mappingConfigurationSearchResultsPanel"/>
                 </bean>
                 <bean class="org.ikasan.dashboard.ui.framework.display.IkasanUIView" scope="session">
-                    <constructor-arg value="existingMappingConfigurationPanel"/>
-                    <constructor-arg ref="existingMappingConfigurationPanel"/>
+                   <constructor-arg value="existingMappingConfigurationPanel"/>
+                   <constructor-arg ref="existingMappingConfigurationPanel"/>
                 </bean>
                 <bean class="org.ikasan.dashboard.ui.framework.display.IkasanUIView" scope="session">
-                    <constructor-arg value="newClientWindow"/>
-                    <constructor-arg ref="newClientWindow"/>
+                   <constructor-arg value="newClientWindow"/>
+                   <constructor-arg ref="newClientWindow"/>
                 </bean>
                 <bean class="org.ikasan.dashboard.ui.framework.display.IkasanUIView" scope="session">
-                    <constructor-arg value="newContextWindow"/>
-                    <constructor-arg ref="newContextWindow"/>
+                   <constructor-arg value="newContextWindow"/>
+                   <constructor-arg ref="newContextWindow"/>
                 </bean>
                 <bean class="org.ikasan.dashboard.ui.framework.display.IkasanUIView" scope="session">
-                    <constructor-arg value="newConfigurationTypeWindow"/>
-                    <constructor-arg ref="newConfigurationTypeWindow"/>
+                   <constructor-arg value="newConfigurationTypeWindow"/>
+                   <constructor-arg ref="newConfigurationTypeWindow"/>
                 </bean>
                 <bean class="org.ikasan.dashboard.ui.framework.display.IkasanUIView" scope="session">
-                    <constructor-arg value="newMappingConfigurationPanel"/>
-                    <constructor-arg ref="newMappingConfigurationPanel"/>
+                   <constructor-arg value="newMappingConfigurationPanel"/>
+                   <constructor-arg ref="newMappingConfigurationPanel"/>
                 </bean>
             </list>
         </constructor-arg>
         <constructor-arg ref="mappingViewComponentContainer"/>
     </bean>
-
+    
     <!-- Very Important: We need to use this proxy bean to avoid a circular dependency!! -->
     <bean id="mappingNavigator" class="org.springframework.aop.framework.ProxyFactoryBean" scope="session">
-        <property name="targetSource">
-            <bean class="org.springframework.aop.target.LazyInitTargetSource">
-                <property name="targetBeanName"><idref bean="mappingNavigatorBean"/></property>
-            </bean>
-        </property>
+      <property name="targetSource">
+        <bean class="org.springframework.aop.target.LazyInitTargetSource">
+          <property name="targetBeanName"><idref bean="mappingNavigatorBean"/></property>
+        </bean>
+      </property>
     </bean>
 
-    <bean id="mappingViewComponentContainer" class="org.ikasan.dashboard.ui.framework.display.ViewComponentContainer" scope="session">
-        <constructor-arg value="false"/>
+	<bean id="mappingViewComponentContainer" class="org.ikasan.dashboard.ui.framework.display.ViewComponentContainer" scope="session">
+    	<constructor-arg value="false"/>
     </bean>
 
     <bean id="emptyPanel" class="com.vaadin.navigator.Navigator.EmptyView" scope="session">
@@ -83,7 +87,7 @@
     </bean>
 
     <bean id="newActions" class="org.ikasan.dashboard.ui.mappingconfiguration.panel.NewActions" scope="session">
-        <constructor-arg ref="newMappingConfigurationPanel"/>
+        <constructor-arg ref="existingMappingConfigurationPanel"/>
         <constructor-arg ref="typeComboBoxRefreshGroup"/>
         <constructor-arg ref="clientComboBoxRefreshGroup"/>
         <constructor-arg ref="contextComboBoxRefreshGroup"/>
@@ -111,6 +115,7 @@
         <constructor-arg ref="mappingConfigurationConfigurationValuesTable"/>
         <constructor-arg ref="existingMappingConfigurationPanel"/>
         <constructor-arg ref="systemEventService"/>
+        <constructor-arg ref="mappingNavigator"/>
     </bean>
 
     <bean id="newConfigurationTypeWindow" class="org.ikasan.dashboard.ui.mappingconfiguration.window.NewMappingConfigurationTypeWindow" scope="session">
@@ -193,6 +198,7 @@
     </bean>
 
     <bean id="mappingConfigurationValuesExportHelper" class="org.ikasan.dashboard.ui.mappingconfiguration.util.MappingConfigurationValuesExportHelper" scope="session">
+        <constructor-arg ref="mappingConfigurationService"/>
     </bean>
 
     <bean id="mappingView" class="org.ikasan.dashboard.ui.mappingconfiguration.panel.MappingConfigurationView" scope="session">
@@ -342,6 +348,8 @@
         <constructor-arg ref="saveRequiredMonitor"/>
         <constructor-arg ref="adminUserVisibilityGroup"/>
         <constructor-arg ref="systemEventService"/>
+        <constructor-arg ref="mappingConfigurationExportHelper"/>
+        <constructor-arg ref="platformConfigurationService"/>
     </bean>
 
     <bean id="searchResultTableItemClickListener" class="org.ikasan.dashboard.ui.mappingconfiguration.listener.MappingSearchResultTableItemClickListener" scope="session">
@@ -494,7 +502,7 @@
         <constructor-arg value="New type:"/>
         <property name="visible" value="false"/>
     </bean>
-
+    
     <bean id="actionsLabel" class="com.vaadin.ui.Label" scope="session">
         <constructor-arg value="Actions"/>
         <property name="visible" value="false"/>
@@ -513,50 +521,50 @@
     <bean id="adminUserVisibilityGroup" class="org.ikasan.dashboard.ui.framework.group.VisibilityGroup" scope="session">
         <property name="components" ref="mappingEditVisibilityMap" />
     </bean>
-
+    
     <util:map id="mappingEditVisibilityMap" value-type="java.lang.String" map-class="java.util.HashMap" scope="session">
-        <entry value="EditMapping" key-ref="newMappingConfigurationEditButton" />
-        <entry value="EditMapping" key-ref="newMappingConfigurationSaveButton" />
-        <entry value="EditMapping" key-ref="newMappingConfigurationCancelButton" />
-        <entry value="EditMapping" key-ref="newMappingConfigurationValueNewRecordButton" />
-        <entry value="EditMapping" key-ref="newMappingConfigurationValueDeleteAllButton" />
-        <entry value="EditMapping" key-ref="newMappingConfigurationValueImportButton" />
-        <entry value="EditMapping" key-ref="newMappingConfigurationValueExportButton" />
-        <entry value="EditMapping" key-ref="newMappingConfigurationExportButton" />
-        <entry value="EditMapping" key-ref="existingMappingConfigurationEditButton" />
-        <entry value="EditMapping" key-ref="existingMappingConfigurationSaveButton" />
-        <entry value="EditMapping" key-ref="existingMappingConfigurationCancelButton" />
-        <entry value="EditMapping" key-ref="existingMappingConfigurationValueNewRecordButton" />
-        <entry value="EditMapping" key-ref="existingMappingConfigurationValueDeleteAllButton" />
-        <entry value="EditMapping" key-ref="existingMappingConfigurationValueImportButton" />
-        <entry value="EditMapping" key-ref="existingMappingConfigurationValueExportButton" />
-        <entry value="EditMapping" key-ref="existingMappingConfigurationExportButton" />
-        <entry value="EditMapping" key-ref="newClientButton" />
-        <entry value="EditMapping" key-ref="newContextButton" />
-        <entry value="EditMapping" key-ref="newTypeButton" />
-        <entry value="EditMapping" key-ref="newClientLabel" />
-        <entry value="EditMapping" key-ref="newContextLabel" />
-        <entry value="EditMapping" key-ref="newTypeLabel" />
-        <entry value="EditMapping" key-ref="actionsLabel" />
-        <entry value="EditMapping" key-ref="importMappingConfigurationButton" />
-        <entry value="EditMapping" key-ref="newMappingConfigurationLabel" />
-        <entry value="EditMapping" key-ref="importMappingConfigurationLabel" />
-        <entry value="EditMapping" key-ref="newMappingConfigurationButton" />
+	  <entry value="EditMapping" key-ref="newMappingConfigurationEditButton" />
+      <entry value="EditMapping" key-ref="newMappingConfigurationSaveButton" />
+      <entry value="EditMapping" key-ref="newMappingConfigurationCancelButton" />
+      <entry value="EditMapping" key-ref="newMappingConfigurationValueNewRecordButton" />
+      <entry value="EditMapping" key-ref="newMappingConfigurationValueDeleteAllButton" />
+      <entry value="EditMapping" key-ref="newMappingConfigurationValueImportButton" />
+      <entry value="EditMapping" key-ref="newMappingConfigurationValueExportButton" />
+      <entry value="EditMapping" key-ref="newMappingConfigurationExportButton" />
+      <entry value="EditMapping" key-ref="existingMappingConfigurationEditButton" />
+      <entry value="EditMapping" key-ref="existingMappingConfigurationSaveButton" />
+      <entry value="EditMapping" key-ref="existingMappingConfigurationCancelButton" />
+      <entry value="EditMapping" key-ref="existingMappingConfigurationValueNewRecordButton" />
+      <entry value="EditMapping" key-ref="existingMappingConfigurationValueDeleteAllButton" /> 
+      <entry value="EditMapping" key-ref="existingMappingConfigurationValueImportButton" />
+      <entry value="EditMapping" key-ref="existingMappingConfigurationValueExportButton" />
+      <entry value="EditMapping" key-ref="existingMappingConfigurationExportButton" />
+      <entry value="EditMapping" key-ref="newClientButton" />
+      <entry value="EditMapping" key-ref="newContextButton" />
+      <entry value="EditMapping" key-ref="newTypeButton" />
+      <entry value="EditMapping" key-ref="newClientLabel" />
+      <entry value="EditMapping" key-ref="newContextLabel" />
+      <entry value="EditMapping" key-ref="newTypeLabel" />
+      <entry value="EditMapping" key-ref="actionsLabel" />
+      <entry value="EditMapping" key-ref="importMappingConfigurationButton" />
+      <entry value="EditMapping" key-ref="newMappingConfigurationLabel" />
+      <entry value="EditMapping" key-ref="importMappingConfigurationLabel" />
+      <entry value="EditMapping" key-ref="newMappingConfigurationButton" />
     </util:map>
-
+    
     <bean id="editMappingConfigurationVisibilityGroup" class="org.ikasan.dashboard.ui.framework.group.VisibilityGroup" scope="session">
         <property name="components" ref="mappingModifyExistingVisibilityMap" />
     </bean>
-
-    <util:map id="mappingModifyExistingVisibilityMap" value-type="java.lang.String" map-class="java.util.HashMap" scope="session">
-        <entry value="EditMapping" key-ref="existingMappingConfigurationEditButton" />
-        <entry value="EditMapping" key-ref="existingMappingConfigurationSaveButton" />
-        <entry value="EditMapping" key-ref="existingMappingConfigurationCancelButton" />
-        <entry value="EditMapping" key-ref="existingMappingConfigurationValueNewRecordButton" />
-        <entry value="EditMapping" key-ref="existingMappingConfigurationValueDeleteAllButton" />
-        <entry value="EditMapping" key-ref="existingMappingConfigurationValueImportButton" />
-        <entry value="EditMapping" key-ref="existingMappingConfigurationValueExportButton" />
-        <entry value="EditMapping" key-ref="existingMappingConfigurationExportButton" />
+    
+     <util:map id="mappingModifyExistingVisibilityMap" value-type="java.lang.String" map-class="java.util.HashMap" scope="session">
+      <entry value="EditMapping" key-ref="existingMappingConfigurationEditButton" />
+      <entry value="EditMapping" key-ref="existingMappingConfigurationSaveButton" />
+      <entry value="EditMapping" key-ref="existingMappingConfigurationCancelButton" />
+      <entry value="EditMapping" key-ref="existingMappingConfigurationValueNewRecordButton" />
+      <entry value="EditMapping" key-ref="existingMappingConfigurationValueDeleteAllButton" /> 
+      <entry value="EditMapping" key-ref="existingMappingConfigurationValueImportButton" />
+      <entry value="EditMapping" key-ref="existingMappingConfigurationValueExportButton" />
+      <entry value="EditMapping" key-ref="existingMappingConfigurationExportButton" />
     </util:map>
-
+    
 </beans>
