@@ -56,24 +56,15 @@
         message itself
     ================================================
   -->
-  <appender name="all" class="org.apache.log4j.RollingFileAppender">
-    <param name="File" value="server.log"/>
-    <param name="Threshold" value="INFO"/>
+  <appender name="all" class="org.apache.log4j.ConsoleAppender">
     <param name="Append" value="true"/>
-    <param name="MaxFileSize" value="2MB"/>
-    <param name="MaxBackupIndex" value="20"/>
     <layout class="org.apache.log4j.PatternLayout">
       <param name="ConversionPattern" value="%d{yyyyMMdd HH:mm:ss.SSS} %-5p [%t] %C{1}.%M(): %x %m%n"/>
     </layout>
   </appender>
 
-  <appender name="ikasan-dashboard" class="org.apache.log4j.RollingFileAppender">
-  	<param name="File" value="ikasan-dashboard.log"/>
-    <param name="Threshold" value="INFO"/>
-    <param name="Append" value="true"/>
-    <param name="MaxFileSize" value="2MB"/>
-    <param name="MaxBackupIndex" value="20"/>
-    <layout class="org.apache.log4j.PatternLayout">
+  <appender name="ikasan-dashboard" class="org.apache.log4j.ConsoleAppender">
+  	<layout class="org.apache.log4j.PatternLayout">
       <param name="ConversionPattern" value="%d{yyyyMMdd HH:mm:ss.SSS} %-5p [%t] %C{1}.%M(): %x %m%n"/>
     </layout>
   </appender>

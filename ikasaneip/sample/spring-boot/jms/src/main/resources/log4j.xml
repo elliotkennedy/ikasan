@@ -2,10 +2,7 @@
 <!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
 <log4j:configuration debug="false" xmlns:log4j='http://jakarta.apache.org/log4j/'>
 
-    <appender name="FILE" class="org.apache.log4j.RollingFileAppender">
-        <param name="File" value="sample.log"/>
-        <param name="maxFileSize" value="20MB" />
-        <param name="maxBackupIndex" value="5" />
+    <appender name="FILE" class="org.apache.log4j.ConsoleAppender">
 
         <layout class="org.apache.log4j.PatternLayout">
             <param name="ConversionPattern" value="%d{yyyyMMdd HH:mm:ss SSS} %-5p [%t]: %x %m%n"/>
