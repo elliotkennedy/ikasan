@@ -6,6 +6,7 @@ items:
     labels:
       run: springboot-sample
     name: springboot-sample
+    namespace: ikasan
   spec:
     ports:
     - nodePort: 32343

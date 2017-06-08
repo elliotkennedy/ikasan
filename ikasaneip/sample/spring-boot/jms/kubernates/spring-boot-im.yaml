@@ -6,7 +6,7 @@ items:
     labels:
       run: springboot-sample
     name: springboot-sample
-    namespace: default
+    namespace: ikasan
   spec:
     replicas: 1
     selector:
@@ -21,6 +21,7 @@ items:
       metadata:
         labels:
           run: springboot-sample
+        namespace: ikasan
       spec:
         containers:
         - image: ikasan/springboot-service:2.0.0-SNAPSHOT
