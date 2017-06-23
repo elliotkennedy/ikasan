@@ -39,7 +39,7 @@ items:
           resources: {}
           volumeMounts:
             - name: config-volume
-              mountPath: /opt/runtime/ikasan/dashboard/config
+              mountPath: /deployments/config
           livenessProbe:
               httpGet:
                  path: /ikasan-dashboard/manage/health
