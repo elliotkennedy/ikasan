@@ -79,9 +79,9 @@
 				<version>2.4.1</version>
 				<configuration>
 					<filesets>
-						<fileset>
+						<!--fileset>
 							<directory>src/main/resources/VAADIN/widgetsets</directory>
-						</fileset>
+						</fileset-->
 					</filesets>
 				</configuration>
 			</plugin>
