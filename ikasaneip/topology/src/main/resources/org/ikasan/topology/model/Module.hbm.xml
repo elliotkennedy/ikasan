@@ -88,6 +88,8 @@
                   column="Version"
                   not-null="false"
                   unique="false"/>
+
+        <property name="standalone" column="Standalone" type="boolean" not-null="true"/>
         
         <many-to-one name="server" column="ServerId"
        		class="org.ikasan.topology.model.Server" not-null="false" lazy="false"/>

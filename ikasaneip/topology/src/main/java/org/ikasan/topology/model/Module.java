@@ -59,6 +59,7 @@ public class Module
     private String diagramUrl;
     private String version;
     private Server server;
+    private boolean standalone = true;
     private Set<Flow> flows;
 
     /** The data time stamp when an instance was first created */
@@ -168,6 +169,16 @@ public class Module
     public void setVersion(String version)
     {
         this.version = version;
+    }
+
+    public boolean isStandalone()
+    {
+        return standalone;
+    }
+
+    public void setStandalone(boolean standalone)
+    {
+        this.standalone = standalone;
     }
 
     /**
