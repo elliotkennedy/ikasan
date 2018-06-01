@@ -64,6 +64,10 @@ public class BuilderFactory implements ApplicationContextAware
     /** handle to the spring application context */
     ApplicationContext applicationContext;
 
+    /** handle to Ikasan specific context */
+    IkasanContext ikasanContext;
+
+    /** cached modules */
     Map<String, ModuleBuilder> moduleBuilders = new HashMap<String, ModuleBuilder>();
 
     /**
@@ -79,7 +83,7 @@ public class BuilderFactory implements ApplicationContextAware
             return this.moduleBuilders.get(moduleName);
         }
 
-        ModuleBuilder moduleBuilder = new ModuleBuilder(this.applicationContext, moduleName);
+        ModuleBuilder moduleBuilder = new ModuleBuilder(ikasanContext, this.applicationContext, moduleName);
         this.moduleBuilders.put(moduleName, moduleBuilder);
         return moduleBuilder;
     }
@@ -101,7 +105,7 @@ public class BuilderFactory implements ApplicationContextAware
      */
     public ComponentBuilder getComponentBuilder()
     {
-        return new ComponentBuilder(this.applicationContext);
+        return new ComponentBuilder(this.ikasanContext.clone(), this.applicationContext);
     }
 
     /**
@@ -133,7 +137,14 @@ public class BuilderFactory implements ApplicationContextAware
     }
 
     @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException
+    {
         this.applicationContext = applicationContext;
+        this.ikasanContext = getIkasanContext(applicationContext);
+    }
+
+    protected IkasanContext getIkasanContext(ApplicationContext applicationContext)
+    {
+        return new IkasanContextDefaultImpl(applicationContext);
     }
 }

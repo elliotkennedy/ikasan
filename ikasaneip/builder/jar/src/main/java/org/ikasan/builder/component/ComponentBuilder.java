@@ -40,7 +40,7 @@
  */
 package org.ikasan.builder.component;
 
-import org.ikasan.builder.AopProxyProvider;
+import org.ikasan.builder.IkasanContext;
 import org.ikasan.builder.component.endpoint.*;
 import org.ikasan.builder.component.filter.MessageFilterBuilder;
 import org.ikasan.builder.component.filter.MessageFilterBuilderImpl;
@@ -53,19 +53,11 @@ import org.ikasan.component.endpoint.util.consumer.MessageGenerator;
 import org.ikasan.component.endpoint.util.consumer.SimpleMessageGenerator;
 import org.ikasan.component.endpoint.util.producer.LogProducer;
 import org.ikasan.component.splitter.DefaultListSplitter;
-import org.ikasan.connector.base.command.TransactionalResourceCommandDAO;
-import org.ikasan.connector.basefiletransfer.outbound.persistence.BaseFileTransferDao;
-import org.ikasan.connector.util.chunking.model.dao.FileChunkDao;
-import org.ikasan.filter.duplicate.service.DuplicateFilterService;
-import org.ikasan.scheduler.ScheduledJobFactory;
 import org.ikasan.spec.component.endpoint.Producer;
 import org.ikasan.spec.component.splitting.Splitter;
-import org.quartz.Scheduler;
-import org.springframework.context.ApplicationContext;
 import org.springframework.jms.core.IkasanJmsTemplate;
 import org.springframework.transaction.jta.JtaTransactionManager;
 
-import javax.transaction.TransactionManager;
 import java.util.concurrent.Executors;
 
 /**
@@ -75,15 +67,19 @@ import java.util.concurrent.Executors;
  */
 public class ComponentBuilder
 {
-    /** handle to spring context */
-    ApplicationContext applicationContext;
+    /** context for core services */
+    IkasanContext ikasanContext;
 
-    public ComponentBuilder(ApplicationContext applicationContext)
+    /**
+     * Constructor
+     * @param ikasanContext
+     */
+    public ComponentBuilder(IkasanContext ikasanContext)
     {
-        this.applicationContext = applicationContext;
-        if(applicationContext == null)
+        this.ikasanContext = ikasanContext;
+        if(ikasanContext == null)
         {
-            throw new IllegalArgumentException("applicationContext cannot be 'null'");
+            throw new IllegalArgumentException("ikasanContext cannot be 'null'");
         }
     }
 
@@ -93,9 +89,9 @@ public class ComponentBuilder
      */
     public ScheduledConsumerBuilder scheduledConsumer()
     {
-        ScheduledConsumer scheduledConsumer = new org.ikasan.component.endpoint.quartz.consumer.ScheduledConsumer( this.applicationContext.getBean(Scheduler.class) );
+        ScheduledConsumer scheduledConsumer = new org.ikasan.component.endpoint.quartz.consumer.ScheduledConsumer( this.ikasanContext.getScheduler() );
         ScheduledConsumerBuilder scheduledConsumerBuilder = new ScheduledConsumerBuilderImpl(scheduledConsumer,
-                this.applicationContext.getBean(ScheduledJobFactory.class), this.applicationContext.getBean(AopProxyProvider.class));
+                this.ikasanContext.getScheduledJobFactory(), this.ikasanContext.getAopProxyProvider());
         return scheduledConsumerBuilder;
     }
 
@@ -106,9 +102,9 @@ public class ComponentBuilder
      */
     public ScheduledConsumerBuilder scheduledConsumer(String scheduledJobName)
     {
-        ScheduledConsumer scheduledConsumer = new org.ikasan.component.endpoint.quartz.consumer.ScheduledConsumer( this.applicationContext.getBean(Scheduler.class) );
+        ScheduledConsumer scheduledConsumer = new org.ikasan.component.endpoint.quartz.consumer.ScheduledConsumer( this.ikasanContext.getScheduler() );
         ScheduledConsumerBuilder scheduledConsumerBuilder = new ScheduledConsumerBuilderImpl(scheduledConsumer,
-                this.applicationContext.getBean(ScheduledJobFactory.class), this.applicationContext.getBean(AopProxyProvider.class));
+                this.ikasanContext.getScheduledJobFactory(), this.ikasanContext.getAopProxyProvider());
         scheduledConsumerBuilder.setScheduledJobName(scheduledJobName);
         scheduledConsumerBuilder.setScheduledJobGroupName(scheduledJobName + "_group");
         return scheduledConsumerBuilder;
@@ -120,13 +116,13 @@ public class ComponentBuilder
      */
     public SftpConsumerBuilder sftpConsumer()
     {
-        ScheduledConsumer scheduledConsumer = new org.ikasan.component.endpoint.quartz.consumer.ScheduledConsumer( this.applicationContext.getBean(Scheduler.class) );
+        ScheduledConsumer scheduledConsumer = new org.ikasan.component.endpoint.quartz.consumer.ScheduledConsumer( this.ikasanContext.getScheduler() );
         SftpConsumerBuilder sftpConsumerBuilder = new SftpConsumerBuilderImpl(scheduledConsumer,
-                this.applicationContext.getBean(ScheduledJobFactory.class), this.applicationContext.getBean(AopProxyProvider.class)
-                ,this.applicationContext.getBean(JtaTransactionManager.class)
-                ,this.applicationContext.getBean(BaseFileTransferDao.class)
-                ,this.applicationContext.getBean(FileChunkDao.class)
-                ,this.applicationContext.getBean(TransactionalResourceCommandDAO.class)
+                this.ikasanContext.getScheduledJobFactory(), this.ikasanContext.getAopProxyProvider()
+                ,this.ikasanContext.getJtaTransactionManager()
+                ,this.ikasanContext.getBaseFileTransferDao()
+                ,this.ikasanContext.getFileChunkDao()
+                ,this.ikasanContext.getTransactionalResourceCommandDAO()
 
         );
         return sftpConsumerBuilder;
@@ -140,11 +136,10 @@ public class ComponentBuilder
     {
 
         SftpProducerBuilder sftpProducerBuilder = new SftpProducerBuilderImpl(
-                this.applicationContext.getBean(JtaTransactionManager.class)
-                ,this.applicationContext.getBean(BaseFileTransferDao.class)
-                ,this.applicationContext.getBean(FileChunkDao.class)
-                ,this.applicationContext.getBean(TransactionalResourceCommandDAO.class)
-
+                this.ikasanContext.getJtaTransactionManager()
+                ,this.ikasanContext.getBaseFileTransferDao()
+                ,this.ikasanContext.getFileChunkDao()
+                ,this.ikasanContext.getTransactionalResourceCommandDAO()
         );
         return sftpProducerBuilder;
     }
@@ -155,14 +150,13 @@ public class ComponentBuilder
      */
     public FtpConsumerBuilder ftpConsumer()
     {
-        ScheduledConsumer scheduledConsumer = new org.ikasan.component.endpoint.quartz.consumer.ScheduledConsumer( this.applicationContext.getBean(Scheduler.class) );
+        ScheduledConsumer scheduledConsumer = new org.ikasan.component.endpoint.quartz.consumer.ScheduledConsumer( this.ikasanContext.getScheduler() );
         FtpConsumerBuilder ftpConsumerBuilder = new FtpConsumerBuilderImpl(scheduledConsumer,
-                this.applicationContext.getBean(ScheduledJobFactory.class), this.applicationContext.getBean(AopProxyProvider.class)
-                ,this.applicationContext.getBean(JtaTransactionManager.class)
-                ,this.applicationContext.getBean(BaseFileTransferDao.class)
-                ,this.applicationContext.getBean(FileChunkDao.class)
-                ,this.applicationContext.getBean(TransactionalResourceCommandDAO.class)
-
+                this.ikasanContext.getScheduledJobFactory(), this.ikasanContext.getAopProxyProvider()
+                ,this.ikasanContext.getJtaTransactionManager()
+                ,this.ikasanContext.getBaseFileTransferDao()
+                ,this.ikasanContext.getFileChunkDao()
+                ,this.ikasanContext.getTransactionalResourceCommandDAO()
         );
         return ftpConsumerBuilder;
     }
@@ -175,11 +169,10 @@ public class ComponentBuilder
     {
 
         FtpProducerBuilder ftpProducerBuilder = new FtpProducerBuilderImpl(
-                this.applicationContext.getBean(JtaTransactionManager.class)
-                ,this.applicationContext.getBean(BaseFileTransferDao.class)
-                ,this.applicationContext.getBean(FileChunkDao.class)
-                ,this.applicationContext.getBean(TransactionalResourceCommandDAO.class)
-
+                this.ikasanContext.getJtaTransactionManager()
+                ,this.ikasanContext.getBaseFileTransferDao()
+                ,this.ikasanContext.getFileChunkDao()
+                ,this.ikasanContext.getTransactionalResourceCommandDAO()
         );
         return ftpProducerBuilder;
     }
@@ -190,9 +183,9 @@ public class ComponentBuilder
      */
     public FileConsumerBuilder fileConsumer()
     {
-        ScheduledConsumer scheduledConsumer = new org.ikasan.component.endpoint.quartz.consumer.ScheduledConsumer( this.applicationContext.getBean(Scheduler.class) );
+        ScheduledConsumer scheduledConsumer = new org.ikasan.component.endpoint.quartz.consumer.ScheduledConsumer( this.ikasanContext.getScheduler() );
         FileConsumerBuilder fileConsumerBuilder = new FileConsumerBuilderImpl(scheduledConsumer,
-                this.applicationContext.getBean(ScheduledJobFactory.class), this.applicationContext.getBean(AopProxyProvider.class), new FileMessageProvider() );
+                this.ikasanContext.getScheduledJobFactory(), this.ikasanContext.getAopProxyProvider(), new FileMessageProvider() );
         return fileConsumerBuilder;
     }
 
@@ -212,7 +205,7 @@ public class ComponentBuilder
     public JmsConsumerBuilder jmsConsumer() {
         JmsContainerConsumer jmsConsumer = new JmsContainerConsumer();
         JmsConsumerBuilder jmsConsumerBuilder = new JmsConsumerBuilderImpl(jmsConsumer,
-                this.applicationContext.getBean(JtaTransactionManager.class), this.applicationContext.getBean(TransactionManager.class),this.applicationContext.getBean(AopProxyProvider.class));
+                this.ikasanContext.getJtaTransactionManager(), this.ikasanContext.getAopProxyProvider());
         return jmsConsumerBuilder;
     }
 
@@ -221,7 +214,7 @@ public class ComponentBuilder
      * @return jmsProducerBuilder
      */
     public JmsProducerBuilder jmsProducer() {
-        JmsProducerBuilder jmsProducerBuilder = new JmsProducerBuilderImpl(new IkasanJmsTemplate(),this.applicationContext.getBean(TransactionManager.class));
+        JmsProducerBuilder jmsProducerBuilder = new JmsProducerBuilderImpl(new IkasanJmsTemplate(), this.ikasanContext.getJtaTransactionManager().getTransactionManager());
         return jmsProducerBuilder;
     }
 
@@ -258,7 +251,7 @@ public class ComponentBuilder
      */
     public MessageFilterBuilder messageFilter()
     {
-        return new MessageFilterBuilderImpl(this.applicationContext.getBean(DuplicateFilterService.class));
+        return new MessageFilterBuilderImpl(this.ikasanContext.getDuplicateFilterService());
     }
 
     /**
@@ -269,11 +262,7 @@ public class ComponentBuilder
     {
         MessageGenerator messageGenerator = new SimpleMessageGenerator();
         EventGeneratingConsumer eventGeneratingConsumer = new EventGeneratingConsumer(Executors.newSingleThreadExecutor(), messageGenerator);
-        return new EventGeneratingConsumerBuilderImpl( messageGenerator, eventGeneratingConsumer, this.applicationContext.getBean(AopProxyProvider.class) );
+        return new EventGeneratingConsumerBuilderImpl( messageGenerator, eventGeneratingConsumer, this.ikasanContext.getAopProxyProvider() );
     }
 
 }
-
-
-
-

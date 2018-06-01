@@ -116,15 +116,15 @@ public class JmsConsumerBuilderImpl implements JmsConsumerBuilder, RequiresAopPr
     /**
      * Constructor
      */
-    public JmsConsumerBuilderImpl(JmsContainerConsumer jmsConsumer, JtaTransactionManager transactionManager,
-                                  TransactionManager arjunaTransactionManager, AopProxyProvider aopProxyProvider) {
+    public JmsConsumerBuilderImpl(JmsContainerConsumer jmsConsumer, JtaTransactionManager jtaTransactionManager,
+                                  AopProxyProvider aopProxyProvider) {
         this.jmsConsumer = jmsConsumer;
         if (jmsConsumer == null) {
             throw new IllegalArgumentException("jmsConsumer cannot be 'null'");
         }
 
-        this.transactionManager = transactionManager;
-        this.arjunaTransactionManager =  arjunaTransactionManager;
+        this.transactionManager = jtaTransactionManager;
+        this.arjunaTransactionManager =  jtaTransactionManager.getTransactionManager();
         this.aopProxyProvider = aopProxyProvider;
     }
 
@@ -457,7 +457,6 @@ public class JmsConsumerBuilderImpl implements JmsConsumerBuilder, RequiresAopPr
             messageListenerContainer.setErrorHandler(jmsConsumer);
             messageListenerContainer.setExceptionListener(jmsConsumer);
             messageListenerContainer.setTransactionManager(transactionManager);
-            messageListenerContainer.setLocalTransactionManager(arjunaTransactionManager);
             this.jmsConsumer.setMessageProvider(messageListenerContainer);
         }
 

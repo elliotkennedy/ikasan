@@ -91,7 +91,9 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.transaction.jta.JtaTransactionManager;
 
+import javax.transaction.TransactionManager;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -102,7 +104,7 @@ import java.util.Map;
  *
  * @author Ikasan Development Team
  */
-public class FlowBuilder implements ApplicationContextAware
+public class FlowBuilder
 {
     /** logger */
     private static Logger logger = LoggerFactory.getLogger(FlowBuilder.class);
@@ -181,22 +183,25 @@ public class FlowBuilder implements ApplicationContextAware
     /** List of FlowInvocationListener */
     List<FlowInvocationContextListener> flowInvocationContextListeners;
 
-    ApplicationContext context;
-
     /** resubmission event factory */
     ResubmissionEventFactory resubmissionEventFactory = new ResubmissionEventFactoryImpl();
 
-    /** Aop Proxy Provider for applying pointcuts */
-    @Autowired
-    AopProxyProvider aopProxyProvider;
+    /** shared context */
+    IkasanContext ikasanContext;
 
     /**
      * Constructor
      *
      * @param name
      */
-    public FlowBuilder(String name, String moduleName)
+    public FlowBuilder(IkasanContext ikasanContext, String name, String moduleName)
     {
+        this.ikasanContext = ikasanContext;
+        if(name == null)
+        {
+            throw new IllegalArgumentException("ikasanContext name cannot be 'null'");
+        }
+
         this.flowName = name;
         if(name == null)
         {
@@ -251,6 +256,17 @@ public class FlowBuilder implements ApplicationContextAware
     public FlowBuilder withDescription(String description)
     {
         this.description = description;
+        return this;
+    }
+
+    /**
+     * Override transaction timeout for the flow
+     * @param timeout
+     * @return
+     */
+    public FlowBuilder setTransactionTimeout(int timeout)
+    {
+        this.ikasanContext.getJtaTransactionManager().setDefaultTimeout(timeout);
         return this;
     }
 
@@ -471,7 +487,7 @@ public class FlowBuilder implements ApplicationContextAware
     public PrimaryRouteBuilder consumer(String name, Consumer consumer)
     {
         ConsumerFlowElementInvoker invoker = new ConsumerFlowElementInvoker();
-        return new PrimaryRouteBuilder( newPrimaryRoute( new FlowElementImpl(name, this.aopProxyProvider.applyPointcut(name, consumer), invoker) ));
+        return new PrimaryRouteBuilder( newPrimaryRoute( new FlowElementImpl(name, this.ikasanContext.getAopProxyProvider().applyPointcut(name, consumer), invoker) ));
     }
 
     protected Route newPrimaryRoute(FlowElement<Consumer> flowElement)
@@ -529,28 +545,28 @@ public class FlowBuilder implements ApplicationContextAware
             {
                 nextFlowElement = new FlowElementImpl(
                         flowElement.getComponentName(),
-                        this.aopProxyProvider.applyPointcut(flowElement.getComponentName(), flowElement.getFlowComponent()),
+                        this.ikasanContext.getAopProxyProvider().applyPointcut(flowElement.getComponentName(), flowElement.getFlowComponent()),
                         flowElement.getFlowElementInvoker(), new LinkedHashMap<>(transitions) );
             }
             else if (flowElement.getFlowComponent() instanceof SingleRecipientRouter)
             {
                 nextFlowElement = new FlowElementImpl(
                         flowElement.getComponentName(),
-                        this.aopProxyProvider.applyPointcut(flowElement.getComponentName(), flowElement.getFlowComponent()),
+                        this.ikasanContext.getAopProxyProvider().applyPointcut(flowElement.getComponentName(), flowElement.getFlowComponent()),
                         flowElement.getFlowElementInvoker(), new LinkedHashMap<>(transitions) );
             }
             else if (flowElement.getFlowComponent() instanceof Sequencer)
             {
                 nextFlowElement = new FlowElementImpl(
                         flowElement.getComponentName(),
-                        this.aopProxyProvider.applyPointcut(flowElement.getComponentName(), flowElement.getFlowComponent()),
+                        this.ikasanContext.getAopProxyProvider().applyPointcut(flowElement.getComponentName(), flowElement.getFlowComponent()),
                         flowElement.getFlowElementInvoker(), new LinkedHashMap<>(transitions) );
             }
             else if (flowElement.getFlowComponent() instanceof Producer)
             {
                 nextFlowElement = new FlowElementImpl(
                         flowElement.getComponentName(),
-                        this.aopProxyProvider.applyPointcut(flowElement.getComponentName(), flowElement.getFlowComponent()),
+                        this.ikasanContext.getAopProxyProvider().applyPointcut(flowElement.getComponentName(), flowElement.getFlowComponent()),
                         flowElement.getFlowElementInvoker());
             }
             else if (flowElement.getFlowComponent() instanceof When
@@ -568,7 +584,7 @@ public class FlowBuilder implements ApplicationContextAware
             {
                 nextFlowElement = new FlowElementImpl(
                         flowElement.getComponentName(),
-                        this.aopProxyProvider.applyPointcut(flowElement.getComponentName(), flowElement.getFlowComponent()),
+                        this.ikasanContext.getAopProxyProvider().applyPointcut(flowElement.getComponentName(), flowElement.getFlowComponent()),
                         flowElement.getFlowElementInvoker(),
                         nextFlowElement);
             }
@@ -664,7 +680,7 @@ public class FlowBuilder implements ApplicationContextAware
                 {
                     logger.info(
                         "ResubmissionService is not instance of JdkDynamicProxy. Trying to proxy resubmissionService.");
-                    resubmissionService = this.aopProxyProvider
+                    resubmissionService = this.ikasanContext.getAopProxyProvider()
                         .applyPointcut(flowName + "resubmissionService", resubmissionService);
                 }
             }
@@ -810,11 +826,6 @@ public class FlowBuilder implements ApplicationContextAware
                 + "]");
 
         return flow;
-    }
-
-    @Override
-    public void setApplicationContext(ApplicationContext context) throws BeansException {
-        this.context = context;
     }
 
     private <T> T getTargetObject(Object proxy, Class<T> targetClass) {

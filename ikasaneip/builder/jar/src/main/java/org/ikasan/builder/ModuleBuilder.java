@@ -46,6 +46,7 @@ import org.ikasan.spec.module.Module;
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.context.ApplicationContext;
 
+import javax.transaction.TransactionManager;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -71,12 +72,20 @@ public class ModuleBuilder
 	/** application context */
 	ApplicationContext context;
 
+	IkasanContext ikasanContext;
+
 	/**
 	 * Constructor
 	 * @param name
 	 */
-	ModuleBuilder(ApplicationContext context, String name)
+	ModuleBuilder(IkasanContext ikasanContext, ApplicationContext context, String name)
 	{
+		this.ikasanContext = ikasanContext;
+		if(ikasanContext == null)
+		{
+			throw new IllegalArgumentException("ikasanContext cannot be 'null'");
+		}
+
 		this.context = context;
 		if(context == null)
 		{
@@ -126,6 +135,17 @@ public class ModuleBuilder
 	}
 
 	/**
+	 * OVerride transaction timeout for the module
+	 * @param timeout
+	 * @return
+	 */
+	public ModuleBuilder setTransactionTimeout(int timeout)
+	{
+		this.ikasanContext.getJtaTransactionManager().setDefaultTimeout(timeout);
+		return this;
+	}
+
+	/**
 	 * Add a flow to the module
 	 * @param flow
 	 * @return
@@ -146,9 +166,8 @@ public class ModuleBuilder
 	public FlowBuilder getFlowBuilder(String flowName)
 	{
 		AutowireCapableBeanFactory beanFactory = this.context.getAutowireCapableBeanFactory();
-		FlowBuilder flowBuilder = new FlowBuilder(flowName, this.name);
+		FlowBuilder flowBuilder = new FlowBuilder(ikasanContext.clone(), flowName, this.name);
 		beanFactory.autowireBean(flowBuilder);
-		flowBuilder.setApplicationContext(this.context);
 		return flowBuilder;
 	}
 }

@@ -47,6 +47,7 @@ import org.ikasan.component.endpoint.jms.consumer.MessageProvider;
 import org.ikasan.component.endpoint.jms.spring.consumer.SpringMessageConsumerConfiguration;
 import org.ikasan.spec.exclusion.IsExclusionServiceAware;
 import org.ikasan.spec.configuration.Configured;
+import org.springframework.transaction.jta.JtaTransactionManager;
 
 import javax.jms.ConnectionFactory;
 import javax.jms.XAConnectionFactory;
@@ -62,8 +63,6 @@ import javax.transaction.TransactionManager;
 public class ArjunaIkasanMessageListenerContainer extends IkasanMessageListenerContainer
         implements MessageProvider, Configured<SpringMessageConsumerConfiguration>, IsExclusionServiceAware
 {
-    private TransactionManager localTransactionManager;
-
     /**
      * Constructor with preferred defaults.
      */
@@ -84,21 +83,11 @@ public class ArjunaIkasanMessageListenerContainer extends IkasanMessageListenerC
         {
             ConnectionFactory connectionFactoryProxy = new ConnectionFactoryProxy(
                     (XAConnectionFactory) getConnectionFactory(),
-                    new TransactionHelperImpl(localTransactionManager)
+                    new TransactionHelperImpl(((JtaTransactionManager)getTransactionManager()).getTransactionManager())
             );
 
             setConnectionFactory(connectionFactoryProxy);
         }
-    }
-
-    public TransactionManager getLocalTransactionManager()
-    {
-        return localTransactionManager;
-    }
-
-    public void setLocalTransactionManager(TransactionManager localTransactionManager)
-    {
-        this.localTransactionManager = localTransactionManager;
     }
 }
 
