@@ -52,8 +52,8 @@ import org.junit.Test;
  */
 public class DefaultFilterEntryTest
 {
-    private DefaultFilterEntry firstEntry = new DefaultFilterEntry("firstEntry".hashCode(), "test-1", 1);
-    private DefaultFilterEntry secondEntry = new DefaultFilterEntry("secondEntry".hashCode(), "test-2", 1);
+    private DefaultFilterEntry firstEntry = new DefaultFilterEntry("firstEntry", "test-1", 1);
+    private DefaultFilterEntry secondEntry = new DefaultFilterEntry("secondEntry", "test-2", 1);
 
     /**
      * Test case: For any two instances of {@link DefaultFilterEntry} A and B, such that<br>
@@ -81,7 +81,7 @@ public class DefaultFilterEntryTest
      */
     @Test public void test_hasCode_two_instances_same_clientid_different_criteria_must_have_different_hash()
     {
-        DefaultFilterEntry differentCriteria = new DefaultFilterEntry("AnotherEntry".hashCode(), "test-1", 1);
+        DefaultFilterEntry differentCriteria = new DefaultFilterEntry("AnotherEntry", "test-1", 1);
         Assert.assertTrue("Any two instances of DefaultFilterEntry with the same clientId but different criteria fields different must return different hashcode values",
                 firstEntry.hashCode() != differentCriteria.hashCode());
     }
@@ -97,7 +97,7 @@ public class DefaultFilterEntryTest
      */
     @Test public void test_hasCode_two_instances_different_clientid_same_criteria_must_have_different_hash()
     {
-        DefaultFilterEntry differentClientId = new DefaultFilterEntry("firstEntry".hashCode(), "test-x", 1);
+        DefaultFilterEntry differentClientId = new DefaultFilterEntry("firstEntry", "test-x", 1);
         Assert.assertTrue("Any two instances of DefaultFilterEntry with different clientId but same criteria fields different must return different hashcode values",
                 firstEntry.hashCode() != differentClientId.hashCode());
     }
@@ -113,7 +113,7 @@ public class DefaultFilterEntryTest
      */
     @Test public void test_hashCode_two_instances_same_clientid_same_critiera_must_have_same_hash()
     {
-        DefaultFilterEntry firstEntryDuplicate = new DefaultFilterEntry("firstEntry".hashCode(), "test-1", 1);
+        DefaultFilterEntry firstEntryDuplicate = new DefaultFilterEntry("firstEntry", "test-1", 1);
         Assert.assertTrue("Any two instances of DefaultFilterEntry with the same clientId and criteria fields must return the same hashcode value.",
                 firstEntry.hashCode() == firstEntryDuplicate.hashCode());
     }
@@ -144,7 +144,7 @@ public class DefaultFilterEntryTest
      */
     @Test public void test_equals_two_instances_same_clientid_different_criteria_must_have_different_hash()
     {
-        DefaultFilterEntry differentCriteria = new DefaultFilterEntry("AnotherEntry".hashCode(), "test-1", 1);
+        DefaultFilterEntry differentCriteria = new DefaultFilterEntry("AnotherEntry", "test-1", 1);
         Assert.assertFalse("Any two instances of DefaultFilterEntry with the same clientId but different criteria fields different are not equal",
                 firstEntry.equals(differentCriteria));
     }
@@ -160,7 +160,7 @@ public class DefaultFilterEntryTest
      */
     @Test public void test_equals_two_instances_different_clientid_same_criteria_must_have_different_hash()
     {
-        DefaultFilterEntry differentClientId = new DefaultFilterEntry("firstEntry".hashCode(), "test-x", 1);
+        DefaultFilterEntry differentClientId = new DefaultFilterEntry("firstEntry", "test-x", 1);
         Assert.assertFalse("Any two instances of DefaultFilterEntry with different clientId but same criteria fields different are not equal",
                 firstEntry.equals(differentClientId));
     }
@@ -176,7 +176,7 @@ public class DefaultFilterEntryTest
      */
     @Test public void test_equals_two_instances_same_clientid_same_critiera_must_have_same_hash()
     {
-        DefaultFilterEntry firstEntryDuplicate = new DefaultFilterEntry("firstEntry".hashCode(), "test-1", 1);
+        DefaultFilterEntry firstEntryDuplicate = new DefaultFilterEntry("firstEntry", "test-1", 1);
         Assert.assertTrue("Any two instances of DefaultFilterEntry with the same clientId and criteria fields must return the same hashcode value.",
                 firstEntry.equals(firstEntryDuplicate));
     }
@@ -187,7 +187,7 @@ public class DefaultFilterEntryTest
      */
     @Test(expected=ClassCastException.class) public void test_equals_fails()
     {
-        DefaultFilterEntry entry = new DefaultFilterEntry("firstEntry".hashCode(), "test", 1);
+        DefaultFilterEntry entry = new DefaultFilterEntry("firstEntry", "test", 1);
         entry.equals(new String("I am not an instance of DefaultFilterEntry"));
         Assert.fail("If the object reference with which to compare was not an instance of DefaultFilterEntry, ClassCastExpcetion should've been thrown.");
     }
@@ -200,7 +200,7 @@ public class DefaultFilterEntryTest
      */
     @Test public void test_large_timeToLive_numbers_filterEntry_constructor_1()
     {
-        DefaultFilterEntry filterEntry = new DefaultFilterEntry("firstEntry".hashCode(), "test-1", 30);
+        DefaultFilterEntry filterEntry = new DefaultFilterEntry("firstEntry", "test-1", 30);
 
         Assert.assertTrue("CreateDate must be smaller than Expiry date",
                 filterEntry.getCreatedDateTime() < filterEntry.getExpiry());
@@ -214,7 +214,7 @@ public class DefaultFilterEntryTest
      */
     @Test public void test_large_timeToLive_numbers_filterEntry_constructor_2()
     {
-        DefaultFilterEntry filterEntry = new DefaultFilterEntry("firstEntry".hashCode(), "test-1", "test-1", 30);
+        DefaultFilterEntry filterEntry = new DefaultFilterEntry("firstEntry", "test-1", "test-1", 30);
 
         Assert.assertTrue("CreateDate must be smaller than Expiry date",
                 filterEntry.getCreatedDateTime() < filterEntry.getExpiry());

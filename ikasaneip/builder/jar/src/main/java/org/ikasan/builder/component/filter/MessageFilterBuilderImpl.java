@@ -166,8 +166,8 @@ public class MessageFilterBuilderImpl implements MessageFilterBuilder
         @Override
         public FilterEntry convert(T message) throws FilterEntryConverterException
         {
-            Integer criteria = Integer.valueOf(message.hashCode());
-            return new DefaultFilterEntry(criteria, configuredResourceId, filterTimeToLive);
+        //    Integer criteria = Integer.valueOf(message.hashCode());
+            return new DefaultFilterEntry(message.hashCode()+"", configuredResourceId, filterTimeToLive);
         }
     }
 }

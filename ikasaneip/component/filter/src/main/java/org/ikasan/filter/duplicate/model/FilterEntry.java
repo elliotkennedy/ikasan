@@ -77,10 +77,10 @@ public interface FilterEntry
 
     /** Getter for a criteria variable: object unique about a message.
      * Together with clientId, it identifies a persisted {@link FilterEntry}
-     * 
+     *
      * @return criteria object whatever it might be.
      */
-    public Integer getCriteria();
+    public String getCriteria();
 
     /** Getter for a criteriaDescription variable: object description of the criteria
      * used to aid support of the filter as the criteria itself is an integer.

@@ -83,9 +83,9 @@ public class FilteredMessageDaoInMemDBTest
     @DirtiesContext
     public void filter_entry_not_found_returns_null()
     {
-        FilterEntry aMessage = new DefaultFilterEntry( "aMessage".hashCode(), "find_test", 1);
+        FilterEntry aMessage = new DefaultFilterEntry( "aMessage", "find_test", 1);
         this.duplicateFilterDao.save(aMessage);
-        FilterEntry messageToBeFound = new DefaultFilterEntry( "test".hashCode(), "find_test", 1);
+        FilterEntry messageToBeFound = new DefaultFilterEntry( "test", "find_test", 1);
         FilterEntry result = this.duplicateFilterDao.findMessage(messageToBeFound);
         Assert.assertNull(result);
     }
@@ -100,7 +100,7 @@ public class FilteredMessageDaoInMemDBTest
     {
         //Save the entry
         int timeToLive = 1;
-        FilterEntry newEntry = new DefaultFilterEntry("save_test".hashCode(), "test", timeToLive);
+        FilterEntry newEntry = new DefaultFilterEntry("save_test", "test", timeToLive);
         this.duplicateFilterDao.save(newEntry);
 
         //Now lets find it..
@@ -108,7 +108,7 @@ public class FilteredMessageDaoInMemDBTest
 
         Assert.assertNotNull(newEntryReloaded);
         Assert.assertEquals("test", newEntryReloaded.getClientId());
-        Assert.assertEquals("save_test".hashCode(), newEntryReloaded.getCriteria().intValue());
+        Assert.assertEquals("save_test", newEntryReloaded.getCriteria());
 
         // created should be before expiry
         Assert.assertTrue(newEntryReloaded.getCreatedDateTime() < newEntryReloaded.getExpiry());
@@ -126,14 +126,14 @@ public class FilteredMessageDaoInMemDBTest
     @DirtiesContext
     public void bulk_delete_expired_entries() throws InterruptedException
     {
-        FilterEntry one = new DefaultFilterEntry("one".hashCode(), "bulk_delete_test", 0);
+        FilterEntry one = new DefaultFilterEntry("one", "bulk_delete_test", 0);
         this.duplicateFilterDao.save(one);
         this.duplicateFilterDao.setHousekeepQuery("delete top _bs_ from MessageFilter where Expiry <= _ex_");   //sybase
 
-        FilterEntry two = new DefaultFilterEntry("two".hashCode(), "bulk_delete_test", 0);
+        FilterEntry two = new DefaultFilterEntry("two", "bulk_delete_test", 0);
         this.duplicateFilterDao.save(two);
 
-        FilterEntry three = new DefaultFilterEntry("three".hashCode(), "bulk_delete_test", 1);
+        FilterEntry three = new DefaultFilterEntry("three", "bulk_delete_test", 1);
         this.duplicateFilterDao.save(three);
         Thread.sleep(10l); // let time move on
         this.duplicateFilterDao.setBatchHousekeepDelete(false);
@@ -160,7 +160,7 @@ public class FilteredMessageDaoInMemDBTest
     {
         for(int i=0; i<19768; i++)
         {
-            FilterEntry one = new DefaultFilterEntry(new Date().hashCode(), "bulk_delete_test" + i	, 0);
+            FilterEntry one = new DefaultFilterEntry(new Date()+"", "bulk_delete_test" + i	, 0);
             this.duplicateFilterDao.save(one);
         }
 
@@ -175,7 +175,7 @@ public class FilteredMessageDaoInMemDBTest
 
         for(int i=0; i<77; i++)
         {
-            FilterEntry one = new DefaultFilterEntry(new Date().hashCode(), "bulk_delete_test" + i	, 0);
+            FilterEntry one = new DefaultFilterEntry(new Date()+"", "bulk_delete_test" + i	, 0);
             this.duplicateFilterDao.save(one);
         }
 
@@ -200,13 +200,13 @@ public class FilteredMessageDaoInMemDBTest
     {
         this.duplicateFilterDao.setBatchHousekeepDelete(false);
         this.duplicateFilterDao.setHousekeepingBatchSize(1);
-        FilterEntry one = new DefaultFilterEntry("one".hashCode(), "batch_delete_test", 0);
+        FilterEntry one = new DefaultFilterEntry("one", "batch_delete_test", 0);
         this.duplicateFilterDao.save(one);
 
-        FilterEntry two = new DefaultFilterEntry("two".hashCode(), "batch_delete_test", 0);
+        FilterEntry two = new DefaultFilterEntry("two", "batch_delete_test", 0);
         this.duplicateFilterDao.save(two);
 
-        FilterEntry three = new DefaultFilterEntry("three".hashCode(), "batch_delete_test", 1);
+        FilterEntry three = new DefaultFilterEntry("three", "batch_delete_test", 1);
         this.duplicateFilterDao.save(three);
         Thread.sleep(10l); // let time move on 
         this.duplicateFilterDao.deleteAllExpired();
@@ -229,7 +229,7 @@ public class FilteredMessageDaoInMemDBTest
     {
         //Save the entry
         int timeToLive = 1;
-        FilterEntry newEntry = new DefaultFilterEntry("save_duplicate_test".hashCode(), "test", timeToLive);
+        FilterEntry newEntry = new DefaultFilterEntry("save_duplicate_test", "test", timeToLive);
         this.duplicateFilterDao.save(newEntry);
 
         //Now try to save it again

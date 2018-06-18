@@ -62,7 +62,7 @@ public class DefaultFilterEntry implements FilterEntry, Serializable
 
     /** A hash unique to message to be filtered. Together with {@link #clientId}
      * it identifies the FilterEntry uniquely. */
-    private Integer criteria;
+    private String criteria;
 
     /** The client id */
     private String clientId;
@@ -89,7 +89,7 @@ public class DefaultFilterEntry implements FilterEntry, Serializable
      * @param timeToLive Time in <b>days</b> to keep keep {@link FilterEntry} persisted before
      *                   it is removed.
      */
-    public DefaultFilterEntry(Integer criteria, String clientId, int timeToLive)
+    public DefaultFilterEntry(String criteria, String clientId, int timeToLive)
     {
         this.criteria = criteria;
         this.clientId = clientId;
@@ -106,7 +106,7 @@ public class DefaultFilterEntry implements FilterEntry, Serializable
      * @param timeToLive Time in <b>days</b> to keep keep {@link FilterEntry} persisted before
      *                   it is removed.
      */
-    public DefaultFilterEntry(Integer criteria, String clientId, String criteriaDescription, int timeToLive)
+    public DefaultFilterEntry(String criteria, String clientId, String criteriaDescription, int timeToLive)
     {
         this.criteria = criteria;
         this.clientId = clientId;
@@ -137,7 +137,7 @@ public class DefaultFilterEntry implements FilterEntry, Serializable
      * Setter for {@link #criteria}
      * @param criteria
      */
-    public void setCriteria(Integer criteria)
+    public void setCriteria(String criteria)
     {
         this.criteria = criteria;
     }
@@ -145,7 +145,7 @@ public class DefaultFilterEntry implements FilterEntry, Serializable
     /**
      * Getter for {@link #criteria}
      */
-    public Integer getCriteria()
+    public String getCriteria()
     {
         return this.criteria;
     }

@@ -41,15 +41,15 @@ public class EntityAgeFilterTest
     public void setup()
     {
 
-        FilterEntry aMessage = new DefaultFilterEntry( "business-id-1".hashCode(), "client-d", "318384000000" /** 318384000000 == 02/03/1980 */, 30);
+        FilterEntry aMessage = new DefaultFilterEntry( "business-id-1", "client-d", "318384000000" /** 318384000000 == 02/03/1980 */, 30);
         duplicateFilterDao.save(aMessage);
-        aMessage = new DefaultFilterEntry( "business-id-2".hashCode(), "client-d", "22345", 30);
+        aMessage = new DefaultFilterEntry( "business-id-2", "client-d", "22345", 30);
         duplicateFilterDao.save(aMessage);
-        aMessage = new DefaultFilterEntry( "business-id-3".hashCode(), "client-d", "32345", 30);
+        aMessage = new DefaultFilterEntry( "business-id-3", "client-d", "32345", 30);
         duplicateFilterDao.save(aMessage);
-        aMessage = new DefaultFilterEntry( "business-id-4".hashCode(), "client-d", "42345", 30);
+        aMessage = new DefaultFilterEntry( "business-id-4", "client-d", "42345", 30);
         duplicateFilterDao.save(aMessage);
-        aMessage = new DefaultFilterEntry( "business-id-5".hashCode(), "client-d", "52345", 30);
+        aMessage = new DefaultFilterEntry( "business-id-5", "client-d", "52345", 30);
         duplicateFilterDao.save(aMessage);
     }
 

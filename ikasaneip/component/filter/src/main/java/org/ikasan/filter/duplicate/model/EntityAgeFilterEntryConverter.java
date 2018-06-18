@@ -66,7 +66,7 @@ public class EntityAgeFilterEntryConverter implements FilterEntryConverter<Strin
             DateFormat df = new SimpleDateFormat(this.datePattern);
             Date date =  df.parse(entityLastUpdated);
 
-            result = new DefaultFilterEntry(entityIdentifier.hashCode(),
+            result = new DefaultFilterEntry(entityIdentifier,
                     this.clientId, new Long(date.getTime()).toString(), timeToLive);
         }
         catch (Exception e)

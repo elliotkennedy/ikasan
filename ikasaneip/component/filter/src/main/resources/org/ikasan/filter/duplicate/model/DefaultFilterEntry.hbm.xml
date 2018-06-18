@@ -54,8 +54,8 @@
 
         <composite-id>
             <key-property name="criteria" 
-                          type="java.lang.Integer"
-                          column="Criteria" />
+                          type="java.lang.String"
+                          column="CriteriaString" />
             <key-property name="clientId"
                           type="java.lang.String"
                           column="ClientId" />

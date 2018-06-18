@@ -30,15 +30,15 @@ public class DefaultEntityAgeFilterServiceTest
     @Before
     public void setup()
     {
-        FilterEntry aMessage = new DefaultFilterEntry( "business-id-1".hashCode(), "client-d", "12345", 30);
+        FilterEntry aMessage = new DefaultFilterEntry( "business-id-1", "client-d", "12345", 30);
         duplicateFilterDao.save(aMessage);
-        aMessage = new DefaultFilterEntry( "business-id-2".hashCode(), "client-d", "22345", 30);
+        aMessage = new DefaultFilterEntry( "business-id-2", "client-d", "22345", 30);
         duplicateFilterDao.save(aMessage);
-        aMessage = new DefaultFilterEntry( "business-id-3".hashCode(), "client-d", "32345", 30);
+        aMessage = new DefaultFilterEntry( "business-id-3", "client-d", "32345", 30);
         duplicateFilterDao.save(aMessage);
-        aMessage = new DefaultFilterEntry( "business-id-4".hashCode(), "client-d", "42345", 30);
+        aMessage = new DefaultFilterEntry( "business-id-4", "client-d", "42345", 30);
         duplicateFilterDao.save(aMessage);
-        aMessage = new DefaultFilterEntry( "business-id-5".hashCode(), "client-d", "52345", 30);
+        aMessage = new DefaultFilterEntry( "business-id-5", "client-d", "52345", 30);
         duplicateFilterDao.save(aMessage);
     }
 
@@ -48,7 +48,7 @@ public class DefaultEntityAgeFilterServiceTest
     {
         defaultEntityAgeFilterService.initialise("client-d");
 
-        FilterEntry aMessage = new DefaultFilterEntry( "business-id-1".hashCode(), "client-d", "22345", 30);
+        FilterEntry aMessage = new DefaultFilterEntry( "business-id-1", "client-d", "22345", 30);
 
         boolean result = defaultEntityAgeFilterService.isOlderEntity(aMessage);
 
@@ -65,7 +65,7 @@ public class DefaultEntityAgeFilterServiceTest
     {
         defaultEntityAgeFilterService.initialise("client-d");
 
-        FilterEntry aMessage = new DefaultFilterEntry( "business-id-11".hashCode(), "client-d", "22345", 30);
+        FilterEntry aMessage = new DefaultFilterEntry( "business-id-11", "client-d", "22345", 30);
 
         boolean result = defaultEntityAgeFilterService.isOlderEntity(aMessage);
 
@@ -82,7 +82,7 @@ public class DefaultEntityAgeFilterServiceTest
     {
         defaultEntityAgeFilterService.initialise("client-d");
 
-        FilterEntry aMessage = new DefaultFilterEntry( "business-id-1".hashCode(), "client-d", "2345", 30);
+        FilterEntry aMessage = new DefaultFilterEntry( "business-id-1", "client-d", "2345", 30);
 
         boolean result = defaultEntityAgeFilterService.isOlderEntity(aMessage);
 
@@ -99,7 +99,7 @@ public class DefaultEntityAgeFilterServiceTest
     {
         defaultEntityAgeFilterService.initialise("client-d");
 
-        FilterEntry aMessage = new DefaultFilterEntry( "business-id-1".hashCode(), "client-d", "12345", 30);
+        FilterEntry aMessage = new DefaultFilterEntry( "business-id-1", "client-d", "12345", 30);
 
         boolean result = defaultEntityAgeFilterService.isOlderEntity(aMessage);
 
@@ -113,7 +113,7 @@ public class DefaultEntityAgeFilterServiceTest
         defaultEntityAgeFilterService.initialise("client-d");
         defaultEntityAgeFilterService.setOlderIfEquals(false);
 
-        FilterEntry aMessage = new DefaultFilterEntry( "business-id-1".hashCode(), "client-d", "12345", 30);
+        FilterEntry aMessage = new DefaultFilterEntry( "business-id-1", "client-d", "12345", 30);
 
         boolean result = defaultEntityAgeFilterService.isOlderEntity(aMessage);
 
@@ -127,7 +127,7 @@ public class DefaultEntityAgeFilterServiceTest
         defaultEntityAgeFilterService.initialise("client-d");
         defaultEntityAgeFilterService.setOlderIfEquals(true);
 
-        FilterEntry aMessage = new DefaultFilterEntry( "business-id-1".hashCode(), "client-d", "12345", 30);
+        FilterEntry aMessage = new DefaultFilterEntry( "business-id-1", "client-d", "12345", 30);
 
         boolean result = defaultEntityAgeFilterService.isOlderEntity(aMessage);
 

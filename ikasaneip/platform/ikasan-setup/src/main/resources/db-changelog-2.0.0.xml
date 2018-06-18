@@ -32,5 +32,6 @@
 	<!-- 2.0.x table drop -->
 	
 	<!-- 2.0.x table modify -->
-	
+    <include file="db/modify/db-changelog-filterMessageAddColumnChangeIndex.xml" relativeToChangelogFile="true" />
+
 </databaseChangeLog>
